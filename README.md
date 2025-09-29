@@ -3,7 +3,7 @@
 <div align="center">
 
 [[Website]](https://beingbeyond.github.io/DemoGrasp/)
-[[arXiv]]()
+[[arXiv]](https://arxiv.org/abs/2509.22149)
 
 [![Python Version](https://img.shields.io/badge/Python-3.10-blue.svg)]()
 [![GitHub license](https://img.shields.io/badge/MIT-blue)]()
@@ -18,5 +18,10 @@ DemoGrasp is a framework for learning universal dexterous grasping policies via 
 # Citation
 If you find our work useful, please consider citing us!
 ```
-
+@article{yuan2025demograsp,
+  title={DemoGrasp: Universal Dexterous Grasping from a Single Demonstration},
+  author={Yuan, Haoqi and Huang, Ziye and Wang, Ye and Mao, Chuan and Xu, Chaoyi and Lu, Zongqing},
+  journal={arXiv preprint arXiv:2509.22149},
+  year={2025}
+}
 ```
