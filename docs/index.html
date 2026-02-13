@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="description" content="DemoGrasp: Universal Dexterous Grasping from a Single Demonstration">
+  <meta property="og:title" content="DemoGrasp" />
+  <meta property="og:url" content="https://beingbeyond.github.io/DemoGrasp/" />
+  <meta name="keywords" content="Dexterous Grasping, Reinforcement Learning">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DemoGrasp</title>
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/x-icon" href="images/icon/favicon.ico">
+
+  <link rel="preload" as="video" href="video/main_9x12.mp4" type="video/mp4">
+  <link rel="preload" as="video" href="video/main_mobile.mp4" type="video/mp4">
+  <link rel="preload" as="video" href="video/single.mp4" type="video/mp4">
+  <link rel="preload" as="video" href="video/clutter.mp4" type="video/mp4">
+  <link rel="preload" as="video" href="video/randomize1.mp4" type="video/mp4">
+  <link rel="preload" as="video" href="video/randomize2.mp4" type="video/mp4">
+  <link rel="preload" as="video" href="video/randomize3.mp4" type="video/mp4">
+  <link rel="preload" as="video" href="video/fail1.mp4" type="video/mp4">
+  <link rel="preload" as="video" href="video/fail2.mp4" type="video/mp4">
+  <link rel="preload" as="video" href="video/fail3.mp4" type="video/mp4">
+  <link rel="preload" as="video" href="video/fail4.mp4" type="video/mp4">
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-FC1STJNFMS"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-FC1STJNFMS');
+  </script>
+
+  <style>
+    .video-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      /* Space out the pairs of videos */
+      width: 60%;
+      margin: 0 auto;
+      /* Center the container */
+      padding: 0 20px;
+      /* Add padding on the sides for smaller screens */
+    }
+
+    .video-two {
+      width: 48%;
+      /* Adjust width slightly for spacing */
+      margin-bottom: 20px;
+      /* Space between rows */
+    }
+
+    .video-group {
+      width: 31%;
+      /* Adjust width slightly for spacing */
+      margin-bottom: 20px;
+    }
+
+    .video-pair {
+      width: 23%;
+      /* Adjust width slightly for spacing */
+      margin-bottom: 20px;
+      /* Space between rows */
+    }
+
+    .video-pair video {
+      width: 100%;
+      /*Video itself occupies full-width of parent (.video-pair)*/
+      height: auto;
+      display: block;
+      /* Important for consistent sizing/spacing*/
+    }
+
+    .video-label {
+      text-align: center;
+      margin-top: 5px;
+    }
+
+    /* 一行四个视频，适度变窄 */
+    .video-row {
+      display: flex;
+      gap: 12px;                 /* 每段视频之间的间距 */
+      justify-content: center;   /* 居中整行 */
+      align-items: flex-start;
+    }
+    .video-row .item {
+      flex: 0 0 22%;             /* 宽度≈容器的 22%（四个并排 + 间距）*/
+      max-width: 22%;
+    }
+    .video-row video {
+      width: 100%;
+      height: auto;              /* 保持比例 */
+      display: block;
+      border-radius: 6px;        /* 可选的小圆角 */
+    }
+
+    /* 小屏时自动换行，两列显示（可按需调整或删除） */
+    @media (max-width: 768px) {
+      .video-row { flex-wrap: wrap; }
+      .video-row .item { flex: 0 0 48%; max-width: 48%; }
+    }
+  </style>
+
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet">
+
+  <link rel="stylesheet" href="./css/bulma.min.css">
+  <link rel="stylesheet" href="./css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="./css/bulma-slider.min.css">
+  <link rel="stylesheet" href="./css/fontawesome.all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="./css/index.css">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script defer src="./js/fontawesome.all.min.js"></script>
+  <script src="./js/bulma-carousel.min.js"></script>
+  <script src="./js/bulma-slider.min.js"></script>
+  <script src="./js/index.js"></script>
+</head>
+
+<body>
+
+
+  <section class="hero is-gray is-fullheight video" style="overflow: hidden; position:relative;">
+    <div class="hero-video" style="height: 100%; width: 177.77777778vh; min-width: 100%;min-height: 56.25vw;">
+      <video playsinline autoplay muted loop>
+        <source src="./video/main_9x12.mp4" type="video/mp4">
+      </video>
+    </div>
+    <div class="hero-video is-hidden-tablet is-inline-block-mobile"
+      style="height: 154.28571428vw; width: 100%; min-width:64.81481481vh;min-height:100%;">
+      <video playsinline autoplay muted loop>
+        <source src="./video/main_mobile.mp4" type="video/mp4">
+      </video>
+    </div>
+    <div class="overlay"></div>
+    <!-- Hero head: will stick at the top -->
+    <div class="hero-head is-hidden-mobile">
+      <header class="navbar">
+        <div class="container is-size-5">
+          <div class="navbar-menu">
+
+          <div class="navbar-end">
+          <a class="navbar-item pl-4 pr-4" href="https://arxiv.org/pdf/2509.22149">
+              <span class="icon" style="margin-right:5px;">
+              <img src="./images/icon/pdf.svg" alt="PDF" />
+              </span>
+              <span style="color: #ffffff;">Paper</span>
+          </a>
+          <a class="navbar-item  pl-4 pr-4" href="https://arxiv.org/abs/2509.22149">
+              <span class="icon" style="margin-right:5px;">
+              <img src="./images/icon/arxiv.svg" alt="arXiv" />
+              </span>
+              <span style="color: #ffffff;">arXiv</span>
+          </a>
+          <a class="navbar-item  pl-4 pr-4" href="https://github.com/BeingBeyond/DemoGrasp">
+              <span class="icon" style="margin-right:5px;">
+              <img src="./images/icon/github.svg" alt="github" />
+              </span>
+              <span style="color: #ffffff;">Project</span>
+          </a>
+          </div>
+      </div>
+        </div>
+      </header>
+    </div>
+
+    <!-- Hero content: will be in the middle -->
+    <div class="hero-body">
+      <div class="container has-text-centered">
+        <h1 class="title is-1 publication-title is-size-1-mobile" style="font-size: 10rem;">
+
+          <link href="https://fonts.googleapis.com/css?family=Times+New+Roman" rel="stylesheet">
+          <span style="font-family: 'apple-system', Times, serif; font-weight: bold; color: #ff0644; letter-spacing: -0.2em;">D</span>
+          <span style="font-family: 'apple-system', Times, serif; font-weight: bold; color: #ff0644; letter-spacing: -0.2em;">e</span>
+          <span style="font-family: 'apple-system', Times, serif; font-weight: bold; color: #ff0672; letter-spacing: -0.2em;">m</span>
+          <span style="font-family: 'apple-system', Times, serif; font-weight: bold; color: #ff067e; letter-spacing: -0.2em;">o</span>
+          <span style="font-family: 'apple-system', Times, serif; font-weight: bold; color: #ff06c5; letter-spacing: -0.2em;">G</span>
+          <span style="font-family: 'apple-system', Times, serif; font-weight: bold; color: #ff06b4; letter-spacing: -0.2em;">r</span>
+          <span style="font-family: 'apple-system', Times, serif; font-weight: bold; color: #ff06b0; letter-spacing: -0.2em;">a</span>
+          <span style="font-family: 'apple-system', Times, serif; font-weight: bold; color: #ff06d1; letter-spacing: -0.2em;">s</span>
+          <span style="font-family: 'apple-system', Times, serif; font-weight: bold; color: #ff06f7; letter-spacing: -0.2em;">p</span>
+        </h1>
+        <h1 class="subtitle is-1 publication-title is-size-3-mobile" style="font-size: 4rem; color: white;">
+          Universal Dexterous Grasping from a Single Demonstration
+        </h1>
+        <h1 class="subtitle is-1 publication-title is-size-4-mobile" style="font-size: 3rem; color: rgb(255, 255, 255);">
+          <br>PKU &nbsp;&nbsp; RUC &nbsp;&nbsp; BeingBeyond
+        </h1>
+        <div class="column has-text-centered is-hidden-tablet">
+          <div class="publication-links">
+            <!-- PDF Link. -->
+            <span class="link-block">
+              <a href="https://arxiv.org/pdf/2509.22149" class="external-link button is-normal is-rounded is-dark">
+                <span class="icon">
+                  <img src="./images/icon/pdf.svg" alt="PDF" />
+                </span>
+                <span>Paper</span>
+              </a>
+            </span>
+            <span class="link-block">
+              <a href="https://arxiv.org/abs/2509.22149" class="external-link button is-normal is-rounded is-dark">
+                <span class="icon">
+                  <img src="./images/icon/arxiv.svg" alt="arXiv" />
+                </span>
+                <span>arXiv</span>
+              </a>
+            </span>
+            <!-- Code Link. -->
+            <span class="link-block">
+              <a href="https://github.com/BeingBeyond/DemoGrasp" class="external-link button is-normal is-rounded is-dark">
+                <span class="icon">
+                  <img src="./images/icon/github.svg" alt="github" />
+                </span>
+                <span>Project</span>
+              </a>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="hero">
+    <div class="hero-body">
+      <div class="container">
+        <div class="columns is-centered">
+          <div class="column has-text-centered">
+            <h1 class="title is-1 publication-title is-size-3-mobile">
+              <!-- <span style="font-family: 'apple-system', Times, serif; font-weight: bold; color: #FFD700; letter-spacing: -0.2em;">B</span>
+              <span style="font-family: 'apple-system', Times, serif; font-weight: bold; color: #FFC300; letter-spacing: -0.2em;">u</span>
+              <span style="font-family: 'apple-system', Times, serif; font-weight: bold; color: #FFB000; letter-spacing: -0.2em;">m</span>
+              <span style="font-family: 'apple-system', Times, serif; font-weight: bold; color: #FFA000; letter-spacing: -0.2em;">b</span>
+              <span style="font-family: 'apple-system', Times, serif; font-weight: bold; color: #FFAA00; letter-spacing: -0.2em;">l</span>
+              <span style="font-family: 'apple-system', Times, serif; font-weight: bold; color: #FFD700; letter-spacing: -0.2em;">e</span>
+              <span style="font-family: 'apple-system', Times, serif; font-weight: bold; color: #FFC300; letter-spacing: -0.2em;">B</span>
+              <span style="font-family: 'apple-system', Times, serif; font-weight: bold; color: #FFB000; letter-spacing: -0.2em;">e</span>
+              <span style="font-family: 'apple-system', Times, serif; font-weight: bold; color: #FFA000; letter-spacing: -0.2em;">e</span>
+              <br> -->
+              <span style="font-size: 90%">DemoGrasp: Universal Dexterous Grasping from a Single Demonstration</span>
+            </h1>
+
+            <h1>
+              <div class="is-size-4 publication-authors is-size-5-mobile">
+                <span class="author-block">
+                    <a href="https://yhqpkueecs.github.io/">Haoqi Yuan</a>*<sup>1,3</sup>&nbsp;&nbsp;
+                </span>
+                <span class="author-block">
+                    <a href="">Ziye Huang</a>*<sup>1,3</sup>&nbsp;&nbsp;
+                </span>
+                <span class="author-block">
+                    <a href="https://scholar.google.com/citations?hl=zh-CN&user=RTuvoywAAAAJ">Ye Wang</a><sup>2,3</sup>&nbsp;&nbsp;
+                </span>
+                <span class="author-block">
+                    <a href="">Chuan Mao</a><sup>1</sup>&nbsp;&nbsp;
+                </span>
+                <span class="author-block">
+                    <a href="https://co1one.github.io/">Chaoyi Xu</a><sup>3</sup>&nbsp;&nbsp;
+                </span>
+                <span class="author-block">
+                    <a href="https://z0ngqing.github.io/">Zongqing Lu</a><sup>&sect;1,3</sup>
+                </span>
+              </div>
+            </h1>
+            <h1>
+              <br>
+              <div class="is-size-4 publication-authors is-size-5-mobile">
+                <span class="author-block" style="font-size: 100%"> <sup>1</sup>PKU </span>&nbsp;&nbsp;&nbsp;
+                <span class="author-block" style="font-size: 100%"> <sup>2</sup>RUC </span>&nbsp;&nbsp;&nbsp;
+                <span class="author-block" style="font-size: 100%"> <sup>3</sup>BeingBeyond </span>
+              </div>
+            </h1>
+            <h1>
+              <div class="is-size-5 publication-authors is-size-6-mobile">
+                <span class="author-block"><small><br><sup>*</sup>Equal Contribution &nbsp; <sup>&sect;</sup>Corresponding Author</small></span>
+              </div>
+            </h1>
+
+            <div class="column has-text-centered">
+              <div class="publication-links">
+                <!-- PDF Link. -->
+                <span class="link-block">
+                  <a href="https://arxiv.org/pdf/2509.22149"
+                    class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon">
+                      <i class="fas fa-file-pdf"></i>
+                    </span>
+                    <span>Paper</span>
+                  </a>
+                </span>
+                <span class="link-block">
+                  <a href="https://arxiv.org/abs/2509.22149"
+                    class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon">
+                      <i class="ai ai-arxiv"></i>
+                    </span>
+                    <span>arXiv</span>
+                  </a>
+                </span>
+                <span class="link-block">
+                  <a href="https://github.com/BeingBeyond/DemoGrasp"
+                    class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon">
+                      <i class="fab fa-github"></i>
+                    </span>
+                    <span>Project</span>
+                  </a>
+                </span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+<section class="hero is-light is-small">
+    <div class="hero-body">
+      <div class="container">
+        <div id="results-carousel1" class="carousel results-carousel">
+          <div class="item item-b">
+            <video id="b" height="100%" muted loop controls autoplay>
+              <source src="./video/randomize1.mp4" type="video/mp4">
+            </video>
+          </div>
+          <div class="item item-c">
+            <video id="c" height="100%" muted loop controls autoplay>
+              <source src="./video/randomize2.mp4" type="video/mp4">
+            </video>
+          </div>
+          <div class="item item-d">
+            <video id="d" height="100%" muted loop controls autoplay>
+              <source src="./video/randomize3.mp4" type="video/mp4">
+            </video>
+          </div>
+          <div class="item">
+            <video height="100%" muted loop controls autoplay>
+              <source src="./video/single.mp4" type="video/mp4">
+            </video>
+          </div>
+          <div class="item item-a">
+            <video id="a" height="100%" muted loop controls autoplay>
+              <source src="./video/clutter.mp4" type="video/mp4">
+            </video>
+          </div>
+          <div class="item item-e">
+            <video id="e" height="100%" muted loop controls autoplay>
+              <source src="./video/instruction.mp4" type="video/mp4">
+            </video>
+          </div>
+        </div>
+      </div>
+    </div>
+</section>
+
+
+
+  <section class="section">
+    <div class="container">
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-two-thirds">
+          <h2 class="title is-3 is-size-4-mobile">Abstract</h2>
+          <div class="content has-text-justified">
+            <ol type="a">
+            Universal grasping with multi-fingered dexterous hands is a fundamental challenge in robotic manipulation. 
+            While recent approaches successfully learn closed-loop grasping policies using reinforcement learning (RL), 
+            the inherent difficulty of high-dimensional, long-horizon exploration necessitates complex reward and curriculum 
+            design, often resulting in suboptimal solutions across diverse objects. We propose DemoGrasp, a simple yet effective 
+            method for learning universal dexterous grasping. We start from a single successful demonstration trajectory of grasping 
+            a specific object and adapt to novel objects and poses by editing the robot actions in this trajectory: changing the wrist 
+            pose determines where to grasp, and changing the hand joint angles determines how to grasp. We formulate this trajectory 
+            editing as a single-step Markov Decision Process (MDP) and use RL to optimize a universal policy across hundreds of objects in 
+            parallel in simulation, with a simple reward consisting of a binary success term and a robot–table collision penalty. In simulation, 
+            DemoGrasp achieves a 95% success rate on DexGraspNet objects using the Shadow Hand, outperforming previous state-of-the-art 
+            methods. It also shows strong transferability, achieving an average success rate of 84.6% across diverse dexterous hand 
+            embodiments on six unseen object datasets, while being trained on only 175 objects. Through vision-based imitation learning, 
+            our policy successfully grasps 110 unseen real-world objects, including small, thin items. It generalizes to spatial, 
+            background, and lighting changes, supports both RGB and depth inputs, and extends to language-guided grasping in cluttered scenes.
+            </ol>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-three-thirds">
+          <div class="columns is-centered">
+            <img src="./images/overview.png" alt="overview" style="width: 70% !important; max-width: 70% !important;">
+          </div>
+
+          <div class="columns is-centered has-text-centered">
+            <div class="column is-three-thirds">
+              <div class="content has-text-justified">
+                <br>
+                <ol type="a">
+                  DemoGrasp is a framework for learning universal dexterous grasping policies via reinforcement learning (RL) 
+                  augmented with a single demonstration. It achieves state-of-the-art performance across diverse robotic 
+                  hand embodiments and transfers effectively to real robots, demonstrating strong generalization.
+                </ol>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-three-thirds">
+          <div class="columns is-centered">
+            <img src="./images/pipeline.jpg" alt="pipeline" style="width: 70% !important; max-width: 70% !important;">
+          </div>
+
+          <div class="columns is-centered has-text-centered">
+            <div class="column is-three-thirds">
+              <div class="content has-text-justified">
+                <br>
+                <ol type="a">
+                  DemoGrasp uses a single demonstration trajectory to learn universal dexterous grasping, 
+                  formulating each grasping trial as a demonstration-editing process. For each trial, 
+                  the Demo Editor policy takes observations at the first timestep and outputs an end-effector 
+                  transformation and a delta hand pose. The actions in the demonstration are then transformed 
+                  accordingly and applied in the simulator. The policy is trained using RL across diverse objects, 
+                  optimizing a simple reward consisting of binary success and a collision penalty. 
+                  A flow-matching policy is trained on successful rollouts with rendered images to enable sim-to-real transfer.
+                </ol>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-three-thirds">
+          <div class="columns is-centered">
+            <img src="./images/dgn.png" alt="dexgraspnet" style="width: 60% !important; max-width: 60% !important;">
+          </div>
+
+          <div class="columns is-centered has-text-centered">
+            <div class="column is-three-thirds">
+              <div class="content has-text-justified">
+                <br>
+                <ol type="a">
+                  DemoGrasp achieves state-of-the-art performance on DexGraspNet with ShadowHand.
+                  Results are reported for both state-based and vision-based settings on 3,200 training 
+                  objects (Train.), 141 unseen objects from seen categories (Test Seen Cat.), and 100 unseen 
+                  objects from unseen categories (Test Unseen Cat.).
+                </ol>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-three-thirds">
+          <div class="columns is-centered">
+            <img src="./images/embodiments.png" alt="embodiments" style="width: 60% !important; max-width: 60% !important;">
+          </div>
+
+          <div class="columns is-centered has-text-centered">
+            <div class="column is-three-thirds">
+              <div class="content has-text-justified">
+                <br>
+                <ol type="a">
+                  DemoGrasp is extensible to any robotic hand embodiment without hyperparameter tuning, achieving high zero-shot success rates on 
+                  various object datasets while being trained on only 175 objects.
+                </ol>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-three-thirds">
+          <div class="columns is-centered">
+            <img src="./images/real-sr.png" alt="real-success" style="width: 60% !important; max-width: 60% !important;">
+          </div>
+
+          <div class="columns is-centered has-text-centered">
+            <div class="column is-three-thirds">
+              <div class="content has-text-justified">
+                <br>
+                <ol type="a">
+                  DemoGrasp successfully grasps 110 objects on a real robot, including small and thin objects. 
+                  It is also extensible to real-world cluttered grasping and instruction-following, by including random 
+                  distractor objects and automatically generated language descriptions during vision-based data 
+                  collection in simulation. 
+                </ol>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="hero is-light is-small">
+  <div class="hero-body">
+    <div class="container">
+      <h3 class="subtitle is-5 has-text-centered has-text-weight-bold">Failure Cases</h3>
+      <div class="video-row">
+        <div class="item item-e">
+          <video id="b" muted loop controls autoplay playsinline>
+            <source src="./video/fail1.mp4" type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-f">
+          <video id="c" muted loop controls autoplay playsinline>
+            <source src="./video/fail2.mp4" type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-g">
+          <video id="d" muted loop controls autoplay playsinline>
+            <source src="./video/fail3.mp4" type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-h">
+          <video muted loop controls autoplay playsinline>
+            <source src="./video/fail4.mp4" type="video/mp4">
+          </video>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+  <section class="section" id="BibTeX">
+    <div class="container content">
+      <h2 style="margin-left: 14%">BibTeX</h2>
+      <pre>
+      <code>
+        @article{yuan2025demograsp,
+          title={DemoGrasp: Universal Dexterous Grasping from a Single Demonstration},
+          author={Yuan, Haoqi and Huang, Ziye and Wang, Ye and Mao, Chuan and Xu, Chaoyi and Lu, Zongqing},
+          journal={arXiv preprint arXiv:2509.22149},
+          year={2025}
+        }
+      </code>
+  </pre>
+    </div>
+  </section>
+
+
+  <footer class="footer">
+    <div class="container">
+      <div class="columns is-centered">
+        <div class="column is-8">
+          <div class="content">
+            <p>
+              This website template is licensed under a <a rel="license"
+                href="http://creativecommons.org/licenses/by-sa/4.0/">Creative
+                Commons Attribution-ShareAlike 4.0 International License</a> and adapted from source at <a
+                href="https://github.com/nerfies/nerfies.github.io">Nerfies</a> and <a
+                href="https://umi-on-legs.github.io/">UMI</a>.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+</body>
+
+</html>

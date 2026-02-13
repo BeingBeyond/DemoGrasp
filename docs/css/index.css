@@ -1,0 +1,283 @@
+body {
+  font-family: 'Noto Sans', sans-serif;
+}
+
+.footer .icon-link {
+    font-size: 25px;
+    color: #000;
+}
+
+.link-block a {
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.dnerf {
+  font-variant: small-caps;
+}
+
+.teaser .hero-body {
+  margin: 0 auto;
+  padding-top: 0;
+  padding-bottom: 3rem;
+  width: 80%;
+}
+
+.teaser {
+  font-family: 'Google Sans', sans-serif;
+}
+
+.publication-banner {
+  max-height: parent;
+}
+
+.publication-banner video {
+  position: relative;
+  left: auto;
+  top: auto;
+  transform: none;
+  object-fit: fit;
+}
+
+.publication-header .hero-body {
+}
+
+.publication-title {
+    font-family: 'Google Sans', sans-serif;
+    text-align: center;
+    margin-left: 5%;
+    margin-right: 5%;
+    margin: 0 auto;
+    width: 80%;
+}
+
+.publication-authors {
+    font-family: 'Google Sans', sans-serif;
+    margin: 0 auto;
+    width: 90%;
+}
+
+.publication-venue {
+    color: #555;
+    width: fit-content;
+    font-weight: bold;
+}
+
+.publication-awards {
+    color: #ff3860;
+    width: fit-content;
+    font-weight: bolder;
+}
+
+.publication-authors {
+}
+
+.publication-authors a {
+   color: hsl(204, 86%, 53%) !important;
+}
+
+.publication-authors a:hover {
+    text-decoration: underline;
+}
+
+.author-block {
+  display: inline-block;
+}
+
+.publication-banner img {
+}
+
+.publication-authors {
+  /*color: #4286f4;*/
+}
+
+.publication-video {
+    position: relative;
+    width: 100%;
+    height: auto;
+    padding-bottom: 56.25%;
+    overflow: hidden;
+    border-radius: 10px !important;
+}
+
+.publication-video iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.publication-body img {
+}
+
+.results-carousel {
+  overflow: hidden;
+}
+
+.results-carousel .item {
+  margin: 5px;
+  overflow: hidden;
+  border: 1px solid #bbb;
+  border-radius: 10px;
+  padding: 0;
+  font-size: 0;
+}
+
+.results-carousel video {
+  margin: 0;
+}
+
+.interpolation-panel {
+  background: #f5f5f5;
+  border-radius: 10px;
+}
+
+.interpolation-panel .interpolation-image {
+  width: 100%;
+  border-radius: 5px;
+}
+
+.interpolation-video-column {
+}
+
+.interpolation-panel .slider {
+  margin: 0 !important;
+}
+
+#interpolation-image-wrapper {
+  width: 100%;
+}
+
+#interpolation-image-wrapper img {
+  border-radius: 5px;
+}
+
+.image-row {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    flex-wrap: nowrap;
+    text-align: center;
+    margin-left: 10%;
+    margin-right: 10%;
+}
+
+.caption-row {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    flex-wrap: nowrap;
+    text-align: center;
+    margin-left: 10%;
+    margin-right: 10%;
+}
+
+.image-container, .caption-container {
+    width: 32%;
+    box-sizing: border-box;
+    margin: 0 10px;
+}
+
+.image-container img {
+    max-width: 100%;
+    width: auto;
+    height: auto;
+}
+
+/* Custom styles in index.css */
+.content {
+    margin: 0 auto;
+    padding: 0 10px; /* Reduce side padding */
+    /*max-width: 1000px; !* Increase max-width to use more horizontal space *!*/
+    max-width: 80%
+}
+
+/* Adjustments to container and column widths */
+.container.is-max-desktop {
+    /*max-width: 1200px; !* Increase max-width *!*/
+    max-width: 80%;
+}
+
+.columns.is-margin {
+  margin-left: 10%;
+  margin-right: 10%;
+}
+
+.column.is-four-fifths {
+  flex: 0 0 90%; /* Ensure column takes up more horizontal space */
+  max-width: 90%; /* Ensure column does not exceed this width */
+  text-align: center;
+}
+
+.column.is-full-width {
+  flex: 0 0 90%;
+  max-width: 90%;
+  text-align: center;
+}
+
+.column img {
+  display: inline-block;
+  flex: 0 0 90%;
+  max-width: 80%;
+  height: auto;
+}
+
+/* Optional: You can remove or adjust this if not needed */
+.has-text-justified {
+    text-align: justify;
+    max-width: 95%;
+}
+
+.three-item {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: nowrap;
+  text-align: center;
+  /*margin: 1px;*/
+  padding: 0;
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.three-item .item {
+  margin: 5px;
+  overflow: hidden;
+  border: 1px solid #bbb;
+  justify-content: center;
+  border-radius: 10px;
+  padding: 0;
+  font-size: 0;
+  align-items: center;
+  width: 100%;
+}
+
+.three-item .item img {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: cover;
+}
+
+.title.is-5 {
+  text-align: justify;
+  margin-left: 10%;
+}
+
+pre {
+    white-space: pre;
+    overflow-x: auto;
+    background-color: #f5f5f5;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-left: 14%;
+    margin-right: 14%;
+}
+
+code {
+    font-family: monospace;
+}
+
+
