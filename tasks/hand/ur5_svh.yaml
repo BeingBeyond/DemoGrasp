@@ -1,0 +1,67 @@
+name: "ur5_svh"
+robotAssetFile: "ur5_svh/ur5_svh.urdf"
+robotAssetFileVisualRealistic: "ur5_svh/ur5_svh.urdf"
+
+arm_dof_names: ["shoulder_pan_joint", "shoulder_lift_joint", "elbow_joint", "wrist_1_joint", "wrist_2_joint", "wrist_3_joint"]
+palm_link: "svh_base_link"
+fingertips_link: ["right_hand_c", "right_hand_t", "right_hand_s", "right_hand_r", "right_hand_q"] #["thtip", "fftip", "mftip", "rftip", "lftip"]
+passive_joints:
+  right_hand_j5:
+    mimic: "right_hand_Thumb_Opposition"
+    multiplier: 1
+  right_hand_j3:
+    mimic: "right_hand_Thumb_Flexion"
+    multiplier: 1.01511
+  right_hand_j4:
+    mimic: "right_hand_Thumb_Flexion"
+    multiplier: 1.44889
+  right_hand_j14:
+    mimic: "right_hand_Index_Finger_Distal"
+    multiplier: 1.0450
+  right_hand_j15:
+    mimic: "right_hand_Middle_Finger_Distal"
+    multiplier: 1.0454
+  right_hand_j12:
+    mimic: "right_hand_Ring_Finger"
+    multiplier: 1.3588
+  right_hand_j16:
+    mimic: "right_hand_Ring_Finger"
+    multiplier: 1.42093
+  right_hand_j13:
+    mimic: "right_hand_Pinky"
+    multiplier: 1.3588
+  right_hand_j17:
+    mimic: "right_hand_Pinky"
+    multiplier: 1.42307
+  right_hand_index_spread:
+    mimic: "right_hand_Finger_Spread"
+    multiplier: 0.5
+  right_hand_ring_spread:
+    mimic: "right_hand_Finger_Spread"
+    multiplier: 0.5
+eef_link: "ee_link"
+num_arm_dofs: 6
+palm_offset: [0.045, 0, 0.01]
+default_dof_pos: [0, -2, 1.8, 0, 1.57, -1.57, 
+  0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+num_obs_dict:
+  "armdof": 6
+  "handdof": 9
+  "fulldof": 26
+  "eefpose": 7
+  "ftpos": 15
+  "palmpose": 7
+  "handposerror": 9
+  "lastact": 16
+  "objxyz": 3
+  "objpose": 7
+  "objinitpose": 7
+  "pcfeat": 64
+  "refaction": 16
+  "objpcl": 1536 # 512*3
+numActions: 16
+hardware_active_hand_dof_names: ["shoulder_pan_joint", "shoulder_lift_joint", "elbow_joint", 
+  "wrist_1_joint", "wrist_2_joint", "wrist_3_joint", 
+  'right_hand_Thumb_Opposition', 'right_hand_Thumb_Flexion', 'right_hand_Index_Finger_Proximal',
+  'right_hand_Index_Finger_Distal', 'right_hand_Finger_Spread', 'right_hand_Pinky',
+  'right_hand_Ring_Finger', 'right_hand_Middle_Finger_Proximal', 'right_hand_Middle_Finger_Distal']

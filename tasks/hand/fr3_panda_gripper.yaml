@@ -1,0 +1,34 @@
+name: "fr3_panda_gripper"
+robotAssetFile: "fr3_gripper/fr3_panda_gripper.urdf"
+robotAssetFileVisualRealistic: "fr3_gripper/fr3_panda_gripper.urdf"
+
+arm_dof_names: ['fr3_joint1', 'fr3_joint2', 'fr3_joint3', 'fr3_joint4', 'fr3_joint5', 'fr3_joint6', 'fr3_joint7']
+palm_link: "fr3_link8"
+fingertips_link: ["right_gripper"]
+passive_joints:
+  panda_finger_joint2:
+    mimic: "panda_finger_joint1"
+    multiplier: 1
+
+
+eef_link: "fr3_link8"
+num_arm_dofs: 7
+palm_offset: [0, 0, 0]
+default_dof_pos: [0, 0, 0, -1.6, 0, 1.6, 0, 0.04, 0.04]
+num_obs_dict:
+  "armdof": 7
+  "handdof": 1
+  "fulldof": 9
+  "eefpose": 7
+  "ftpos": 3
+  "palmpose": 7
+  "handposerror": 1
+  "lastact": 8
+  "objxyz": 3
+  "objpose": 7
+  "objinitpose": 7
+  "pcfeat": 64 
+  "refaction": 8
+  "objpcl": 1536 # 512*3
+numActions: 8
+hardware_active_hand_dof_names: ["panda_finger_joint1"]

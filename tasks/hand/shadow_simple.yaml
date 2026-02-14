@@ -1,0 +1,44 @@
+name: "shadow_simple"
+robotAssetFile: "shadow_hand_simple/right_with_base.urdf"
+robotAssetFileVisualRealistic: "shadow_hand_simple/right_with_base.urdf"
+
+arm_dof_names: ['baseJX', 'baseJY', 'baseJZ', 'baseJROLL', 'baseJPITCH', 'baseJYAW']
+palm_link: "wrist"
+fingertips_link: ["rh_thdistal", "rh_ffdistal", "rh_mfdistal", "rh_rfdistal", "rh_lfdistal"]
+passive_joints:
+  rh_FFJ1:
+    mimic: "rh_FFJ2"
+    multiplier: 1
+  rh_MFJ1:
+    mimic: "rh_MFJ2"
+    multiplier: 1
+  rh_RFJ1:
+    mimic: "rh_RFJ2"
+    multiplier: 1
+  rh_LFJ1:
+    mimic: "rh_LFJ2"
+    multiplier: 1
+
+eef_link: "wrist"
+num_arm_dofs: 6
+palm_offset: [0, 0, 0]
+default_dof_pos: [0.5, -0.1 , 0.4, 0, 1.57, 0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+num_obs_dict:
+  "armdof": 6
+  "handdof": 18
+  "fulldof": 28
+  "eefpose": 7
+  "ftpos": 15
+  "palmpose": 7
+  "handposerror": 18
+  "lastact": 25
+  "objxyz": 3
+  "objpose": 7
+  "objinitpose": 7
+  "pcfeat": 64 
+  "refaction": 25
+  "objpcl": 1536 # 512*3
+numActions: 25
+hardware_active_hand_dof_names: ["rh_FFJ4", "rh_FFJ3", "rh_FFJ2", "rh_MFJ4", "rh_MFJ3", "rh_MFJ2", 
+  "rh_RFJ4", "rh_RFJ3", "rh_RFJ2", "rh_LFJ5", "rh_LFJ4", "rh_LFJ3", "rh_LFJ2", 
+  "rh_THJ5", "rh_THJ4", "rh_THJ3", "rh_THJ2", "rh_THJ1"]

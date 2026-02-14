@@ -1,0 +1,34 @@
+name: "ur5_allegro"
+robotAssetFile: "ur5_allegro/ur5_allegro.urdf"
+robotAssetFileVisualRealistic: "ur5_allegro/ur5_allegro.urdf"
+
+arm_dof_names: ["shoulder_pan_joint", "shoulder_lift_joint", "elbow_joint", "wrist_1_joint", "wrist_2_joint", "wrist_3_joint"]
+palm_link: "Allegro_base_link"
+fingertips_link: ["link_3.0_tip", "link_7.0_tip", "link_11.0_tip", "link_15.0_tip"]
+
+eef_link: "ee_link"
+num_arm_dofs: 6
+palm_offset: [0.02, 0, 0.03]
+default_dof_pos: [0, -2, 1.8, 0, 1.57, -1.57, 
+  0,0,0,0, 1.365,0,0,0, 0,0,0,0, 0,0,0,0]
+num_obs_dict:
+  "armdof": 6
+  "handdof": 16
+  "fulldof": 22
+  "eefpose": 7
+  "ftpos": 12
+  "palmpose": 7
+  "handposerror": 16
+  "lastact": 23
+  "objxyz": 3
+  "objpose": 7
+  "objinitpose": 7
+  "pcfeat": 64 
+  "refaction": 23
+  "objpcl": 1536 # 512*3
+numActions: 23
+hardware_active_hand_dof_names: ["shoulder_pan_joint", "shoulder_lift_joint", "elbow_joint", 
+  "wrist_1_joint", "wrist_2_joint", "wrist_3_joint", "joint_0.0", "joint_1.0", 
+  "joint_2.0", "joint_3.0", "joint_4.0", "joint_5.0", "joint_6.0", "joint_7.0", 
+  "joint_8.0", "joint_9.0", "joint_10.0", "joint_11.0", "joint_12.0", "joint_13.0", 
+  "joint_14.0", "joint_15.0"]

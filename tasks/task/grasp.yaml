@@ -1,0 +1,252 @@
+name: grasp
+
+physics_engine: ${..physics_engine}
+
+#hand_name: "fr3_inspire_tac" # for single hand experiment
+hand_config: ${..hand}
+
+# if given, will override the device setting in gym.
+env: 
+  numEnvs: ${resolve_default:16384,${...num_envs}}
+  envSpacing: 1.2
+  episodeLength: 50
+  randomEpisodeLength: False
+  enableDebugVis: False
+  aggregateMode: 1
+  useRobotVhacd: False # detailed hand-arm shapes, but slow
+  useObjectVhacd: True # should be true
+  enableSelfCollision: False # robot self-collision
+  enableRobotTableCollision: True # robot-table collision; if False, set 1/2 envs to be collision-free
+  objectFriction: 1.0
+
+  clipObservations: 5.0
+  clipActions: 1.0
+  deltaActionScale: [1,1,1,1,1,1,1, 1,1,1,1,1,1] #[0.1,0.1,0.1,0.1,0.2,0.1, 1, 1,1,1,1,1,1]
+
+  # object reset
+  resetPositionRange: [[0.3, 0.8], [-0.35, 0.15], [0.1, 0.12]]
+  resetRandomRot: "random" # random / z / fixed
+  tableHeightRange: [0.018, 0.018]
+  # robot reset
+  resetDofPosRandomInterval: 0.2
+  resetHandDofPosFullRange: True
+  eeSafeWorkspace: [[0.15, -0.45, 0.05], [0.95, 0.25, 0.95]]
+  
+  useRelativeControl: False # use delta action for joint pos control?
+  armController: "qpos" # qpos / worlddpose / eedpose / pose
+  actionsMaxAngVelArm:  1.57
+  actionsMaxAngVelHand: 6.28
+  # stiffnessScale: 1.0
+  # forceLimitScale: 1.0
+  controlFrequencyInv: 1 # 60 Hz
+  
+  # max control error: limit |action - current state|
+  limitControlError: False # apply in env.compute_reference_actions()
+  maxPDErrorEEPos: 0.03 
+  maxPDErrorHand: 0.35
+
+  # controller params
+  pdParamScale: 1.0
+  interpolationStepScale: 1.0
+
+  observationType: "armdof+handdof+eefpose+objpose"
+  enablePointCloud: False # load object downsampled pcls
+  pointsPerObject: 512
+  rewardType: "binary"
+  trackingReferenceFile: "tasks/grasp_ref_inspire.pkl"
+  trackingReferenceLiftTimestep: 13 # timestep to start lifting
+  randomizeTrackingReference: False # randomize wrist ref traj
+  randomizeTrackingReferenceRange: [0.05, 0.05, 0.05, 1.57, 1.57, 1.57] # x,y,z,R,P,Y
+  randomizeGraspPose: False # randomize ref grasp hand pose
+  randomizeGraspPoseRange: 1
+
+  asset:
+    assetRoot: "./assets/"
+    multiObject: True
+    multiObjectList: "union_ycb_unidex/union_ycb_debugset.yaml"
+
+    useDistractorObjects: False # add distractor objects
+    numDistractorObjects: 5
+    randomRemoveDistractorObjects: 0.5 # rates of randomly removing distractor objects
+  
+  render:
+    enable: False # enable camera
+    appearance_realistic: True # realistic scene and robot assets
+    camera_ids: [1,2]
+    data_type: "rgb" # rgb, depth, pcl
+    instruction_template: Grasp the object. #"Pick the {COLOR} duck."
+
+    use_advanced_instruction: False
+    advanced_instruction_template: "Grasp the {COLOR} {OBJ}."
+    object_name_list: "union_ycb_unidex/union_ycb_debugset_names.yaml"
+
+    # post-processing configs
+    save_depth_range: [0.15, 1.0] # for all cameras, clip into this range to save depth
+    pcl_clip_workspace: [[0.25, -0.45, 0.0], [0.85, 0.3, 0.6]]
+    n_pcl_downsample: 2048
+    resize: [256, 256] # resize rgbd
+
+    # domain randomization
+    randomize: False
+    randomization_params:
+      camera_pos: [0,0] #[-0.02, 0.02]
+      camera_quat: [0,0] #[-0.01, 0.01]
+      depth_range: 0.05
+      object_random_texture: True
+      texture_folder: "textures"
+      object_color_choices: [
+        "red", "green", "blue", "yellow", "cyan", "magenta", 
+        "white", "black", "gray", "orange", "purple", "pink", "brown", "olive", 
+        "teal", "navy", "maroon", "lime", "gold", "silver", "bronze"
+      ]
+      color: 0.2 # color noise
+      num_lights: 3
+      light_intensity: [0.1, 0.8]
+      light_ambient: [0.1, 0.8]
+      table_xyz: [0,0,0] #[0.05, 0.02, 0.01]
+
+  # camera configs
+  camera_config:
+    camera_1:
+      type: 'D435'
+      mount: 'fixed'
+      width: 640
+      height: 480
+      depth_range: [0.15, 3.0]
+      intrinsics: [[608.10601807, 0., 323.16036987],
+        [0., 607.04846191, 245.16740417], 
+        [0., 0., 1.]]
+      extrinsics: [[-0.95458387, -0.22931432, 0.19022242, 0.25351984],
+        [-0.29675754, 0.78866419, -0.53846426, 0.47084633],
+        [-0.02654405, -0.57045923, -0.82089687, 0.62032344],
+        [0., 0., 0., 1.]]
+
+    camera_2:
+      type: 'D435'
+      mount: 'fixed'
+      width: 640
+      height: 480
+      depth_range: [0.15, 3.0]
+      intrinsics: [[610.1685791, 0., 327.0413208],
+        [0., 609.07666016, 245.29025269],
+        [0., 0., 1.]]
+      extrinsics: [[0.6464361, 0.58084152, -0.49471557, 0.89060788],
+        [0.76291282, -0.4842839, 0.42829095, -0.44560813],
+        [0.00918638, -0.65428758, -0.75619004, 0.49017396],
+        [0., 0., 0., 1.]]
+
+task:
+  randomize: False
+  randomization_params:
+    frequency: 720   # Define how many simulation steps between generating new randomizations
+    observations:
+      range: [0, .002] # range for the white noise
+      range_correlated: [0, .001] # range for correlated noise, refreshed with freq `frequency`
+      operation: "additive"
+      distribution: "gaussian"
+      # schedule: "linear"   # "constant" is to turn on noise after `schedule_steps` num steps
+      # schedule_steps: 40000
+    actions:
+      range: [0., .001]
+      range_correlated: [0, .015] # range for correlated noise, refreshed with freq `frequency`
+      operation: "additive"
+      distribution: "gaussian"
+      # schedule: "linear"  # "linear" will linearly interpolate between no rand and max rand
+      # schedule_steps: 40000
+    sim_params: 
+      gravity:
+        range: [0, 0.4]
+        operation: "additive"
+        distribution: "gaussian"
+        # schedule: "linear"  # "linear" will linearly interpolate between no rand and max rand
+        # schedule_steps: 40000
+    actor_params:
+      hand:
+        color: True
+        dof_properties:
+          damping: 
+            range: [0.3, 3.0]
+            operation: "scaling"
+            distribution: "loguniform"
+            # schedule: "linear"  # "linear" will scale the current random sample by `min(current num steps, schedule_steps) / schedule_steps`
+            # schedule_steps: 30000
+          stiffness: 
+            range: [0.75, 1.5]
+            operation: "scaling"
+            distribution: "loguniform"
+            # schedule: "linear"  # "linear" will scale the current random sample by `min(current num steps, schedule_steps) / schedule_steps`
+            # schedule_steps: 30000
+          lower:
+            range: [0, 0.01]
+            operation: "additive"
+            distribution: "gaussian"
+            # schedule: "linear"  # "linear" will scale the current random sample by `min(current num steps, schedule_steps) / schedule_steps`
+            # schedule_steps: 30000
+          upper:
+            range: [0, 0.01]
+            operation: "additive"
+            distribution: "gaussian"
+            # schedule: "linear"  # "linear" will scale the current random sample by `min(current num steps, schedule_steps) / schedule_steps`
+            # schedule_steps: 30000
+        rigid_body_properties:
+          mass: 
+            range: [0.5, 1.5]
+            operation: "scaling"
+            distribution: "uniform"
+            setup_only: True # Property will only be randomized once before simulation is started. See Domain Randomization Documentation for more info.
+            # schedule: "linear"  # "linear" will scale the current random sample by `min(current num steps, schedule_steps) / schedule_steps`
+            # schedule_steps: 30000
+        rigid_shape_properties:
+          friction: 
+            num_buckets: 250
+            range: [0.7, 1.3]
+            operation: "scaling"
+            distribution: "uniform"
+            # schedule: "linear"  # "linear" will scale the current random sample by `min(current num steps, schedule_steps) / schedule_steps`
+            # schedule_steps: 30000
+      object:
+        scale:
+          range: [0.95, 1.05]
+          operation: "scaling"
+          distribution: "uniform"
+          setup_only: True # Property will only be randomized once before simulation is started. See Domain Randomization Documentation for more info.
+          # schedule: "linear"  # "linear" will scale the current random sample by ``min(current num steps, schedule_steps) / schedule_steps`
+          # schedule_steps: 30000
+        rigid_body_properties:
+          mass: 
+            range: [0.5, 1.5]
+            operation: "scaling"
+            distribution: "uniform"
+            setup_only: True # Property will only be randomized once before simulation is started. See Domain Randomization Documentation for more info.
+            # schedule: "linear"  # "linear" will scale the current random sample by ``min(current num steps, schedule_steps) / schedule_steps`
+            # schedule_steps: 30000
+        rigid_shape_properties:
+          friction:
+            num_buckets: 250
+            range: [0.7, 1.3]
+            operation: "scaling"
+            distribution: "uniform"
+            # schedule: "linear"  # "linear" will scale the current random sample by `min(current num steps, schedule_steps) / schedule_steps`
+            # schedule_steps: 30000
+
+sim:
+  dt: 0.01667 # 1/60
+  decimation: 20 # policy control dt = sim dt * decimation = 0.1s
+  substeps: 2
+  up_axis: "z"
+  use_gpu_pipeline: ${eq:${...pipeline},"gpu"}
+  gravity: [0.0, 0.0, -9.81]
+  physx:
+    num_threads: ${....num_threads}
+    solver_type: ${....solver_type}
+    use_gpu: ${contains:"cuda",${....sim_device}} # set to False to run on CPU
+    num_position_iterations: 8
+    num_velocity_iterations: 0
+    max_gpu_contact_pairs: 8388608 # 8*1024*1024
+    num_subscenes: ${....num_subscenes}
+    contact_offset: 0.002
+    rest_offset: 0.0
+    bounce_threshold_velocity: 0.2 
+    max_depenetration_velocity: 1000
+    default_buffer_size_multiplier: 5.0
+    contact_collection: 0 # 0: CC_NEVER (don't collect contact info), 1: CC_LAST_SUBSTEP (collect only contacts on last substep), 2: CC_ALL_SUBSTEPS (broken - do not use!)

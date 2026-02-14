@@ -1,0 +1,9 @@
+# Python
+__pycache__/
+
+# Archives
+*.zip
+
+# Project-specific
+ckpt/
+runs_ppo/
