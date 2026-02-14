@@ -26,7 +26,6 @@ conda activate demograsp
 pip install torch==2.3.0+cu121 torchvision==0.18.0+cu121 torchaudio==2.3.0 --index-url https://download.pytorch.org/whl/cu121
 
 pip install numpy==1.23.5 sapien==3.0.0b0 chumpy==0.70 addict==2.4.0 yapf==0.43.0 h5py sorcery==0.2.2 pynvml==11.5.0 ipdb==0.13.13 matplotlib==3.5.1 networkx==3.1 tqdm==4.66.4 datasets==3.1.0 einops==0.4.1 jsonlines
-
 ```
 
 - Install [IsaacGym Preview 4](https://developer.nvidia.com/isaac-gym) and [IsaacGymEnvs](https://github.com/isaac-sim/IsaacGymEnvs).
@@ -61,7 +60,21 @@ You can see the Inspire hand grasping different objects with the same position, 
 
 - For Inspire hand, run:
 ```
-python run_rl_grasp.py task=grasp train=PPOOneStep test=True num_envs=175 task.env.observationType="eefpose+objinitpose+objpcl" task.env.armController=pose task.env.asset.multiObjectList="union_ycb_unidex/union_ycb_debugset.yaml" task.env.randomizeTrackingReference=True task.env.randomizeGraspPose=True task.env.trackingReferenceFile=tasks/grasp_ref_inspire.pkl task.env.episodeLength=50 task.env.enablePointCloud=True train.params.is_vision=True checkpoint='ckpt/inspire.pt'
+python run_rl_grasp.py \
+    task=grasp \
+    train=PPOOneStep \
+    test=True \
+    num_envs=175 \
+    task.env.observationType="eefpose+objinitpose+objpcl" \
+    task.env.armController=pose \
+    task.env.asset.multiObjectList="union_ycb_unidex/union_ycb_debugset.yaml" \
+    task.env.randomizeTrackingReference=True \
+    task.env.randomizeGraspPose=True \
+    task.env.trackingReferenceFile=tasks/grasp_ref_inspire.pkl \
+    task.env.episodeLength=50 \
+    task.env.enablePointCloud=True \
+    train.params.is_vision=True \
+    checkpoint='ckpt/inspire.pt'
 ```
 
 - Use `headless=True` on a headless machine. To evaluate on unseen object categories in DexGraspNet, set `task.env.asset.multiObjectList="union_ycb_unidex/test_set_unseen_cat.yaml"`.
